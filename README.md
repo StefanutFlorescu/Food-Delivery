@@ -97,4 +97,3 @@ mvn compile
 java -cp target/classes org.example.FoodDeliveryApp
 ```
 
-Daca `pom.xml` nu are configurat plugin `exec`, comanda `java` de mai sus este suficienta pentru rulare.
