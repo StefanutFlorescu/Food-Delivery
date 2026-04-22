@@ -93,7 +93,8 @@ Cerintele de implementare sunt acoperite astfel:
 Din directorul proiectului:
 
 ```bash
-mvn compile
-java -cp target/classes org.example.FoodDeliveryApp
+mvn clean package
+java -jar target/Proiect_POO2-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
+
 
