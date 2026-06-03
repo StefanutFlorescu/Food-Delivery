@@ -17,7 +17,7 @@ public class DriverJdbcService {
     public static DriverJdbcService getInstance() { return INSTANCE; }
 
     public void create(Driver d) {
-        String sql = "INSERT INTO drivers(id,name,available,driver_type,vehicle_type,speed_multiplier) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO drivers(id,name,available,driver_type,vehicle_type,price_multiplier) VALUES(?,?,?,?,?,?)";
         try (Connection c = DatabaseManager.getInstance().getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             boolean isExpress = d instanceof ExpressDriver;
             ps.setInt(1, d.getId());
@@ -27,7 +27,7 @@ public class DriverJdbcService {
             if (isExpress) {
                 ExpressDriver expressDriver = (ExpressDriver) d;
                 ps.setString(5, expressDriver.getVehicleType());
-                ps.setDouble(6, expressDriver.getSpeedMultiplier());
+                ps.setDouble(6, expressDriver.getPriceMultiplier());
             } else {
                 ps.setNull(5, Types.VARCHAR);
                 ps.setNull(6, Types.DOUBLE);
@@ -38,7 +38,7 @@ public class DriverJdbcService {
     }
 
     public Driver findById(int id) {
-        String sql = "SELECT id,name,available,driver_type,vehicle_type,speed_multiplier FROM drivers WHERE id=?";
+        String sql = "SELECT id,name,available,driver_type,vehicle_type,price_multiplier FROM drivers WHERE id=?";
         try (Connection c = DatabaseManager.getInstance().getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -58,7 +58,7 @@ public class DriverJdbcService {
     }
 
     public List<Driver> listAll() {
-        String sql = "SELECT id,name,available,driver_type,vehicle_type,speed_multiplier FROM drivers";
+        String sql = "SELECT id,name,available,driver_type,vehicle_type,price_multiplier FROM drivers";
         List<Driver> res = new ArrayList<>();
         try (Connection c = DatabaseManager.getInstance().getConnection(); Statement s = c.createStatement(); ResultSet rs = s.executeQuery(sql)) {
             while (rs.next()) {
@@ -76,7 +76,7 @@ public class DriverJdbcService {
     }
 
     public void update(Driver d) {
-        String sql = "UPDATE drivers SET name=?,available=?,driver_type=?,vehicle_type=?,speed_multiplier=? WHERE id=?";
+        String sql = "UPDATE drivers SET name=?,available=?,driver_type=?,vehicle_type=?,price_multiplier=? WHERE id=?";
         try (Connection c = DatabaseManager.getInstance().getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             boolean isExpress = d instanceof ExpressDriver;
             ps.setString(1, d.getName());
@@ -85,7 +85,7 @@ public class DriverJdbcService {
             if (isExpress) {
                 ExpressDriver expressDriver = (ExpressDriver) d;
                 ps.setString(4, expressDriver.getVehicleType());
-                ps.setDouble(5, expressDriver.getSpeedMultiplier());
+                ps.setDouble(5, expressDriver.getPriceMultiplier());
             } else {
                 ps.setNull(4, Types.VARCHAR);
                 ps.setNull(5, Types.DOUBLE);

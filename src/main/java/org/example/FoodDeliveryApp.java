@@ -77,7 +77,7 @@ public class FoodDeliveryApp {
                         System.out.print("Universitate: ");
                         String university = sc.nextLine();
                         System.out.print("Reducere student (%): ");
-                        int discount = Integer.parseInt(sc.nextLine());
+                        double discount = Double.parseDouble(sc.nextLine());
                         StudentUser su = svc.createStudentUser(n, a, e, phone, university, discount);
                         System.out.println("Creat: " + su);
                     }
@@ -100,9 +100,9 @@ public class FoodDeliveryApp {
                         String n = sc.nextLine();
                         System.out.print("Tip vehicul: ");
                         String vehicleType = sc.nextLine();
-                        System.out.print("Multiplicator viteza: ");
-                        double speedMultiplier = Double.parseDouble(sc.nextLine());
-                        ExpressDriver d = svc.createExpressDriver(n, vehicleType, speedMultiplier);
+                        System.out.print("Multiplicator pret: ");
+                        double priceMultiplier = Double.parseDouble(sc.nextLine());
+                        ExpressDriver d = svc.createExpressDriver(n, vehicleType, priceMultiplier);
                         System.out.println("Creat: " + d);
                     }
                     case "7" -> svc.listUsers().forEach(System.out::println);
@@ -145,7 +145,9 @@ public class FoodDeliveryApp {
                         int rid = Integer.parseInt(sc.nextLine());
                         System.out.print("Item(s) descriere: ");
                         String it = sc.nextLine();
-                        Order o = svc.placeOrder(uid, rid, it);
+                        System.out.print("Delivery fee: ");
+                        double deliveryFee = Double.parseDouble(sc.nextLine());
+                        Order o = svc.placeOrder(uid, rid, it, deliveryFee);
                         System.out.println("Comanda plasata: " + o);
                     }
                     case "16" -> {

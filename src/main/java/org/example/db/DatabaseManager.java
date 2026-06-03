@@ -24,7 +24,8 @@ public class DatabaseManager {
                     "phone_number VARCHAR(100), " +
                     "user_type VARCHAR(50), " +
                     "university VARCHAR(255), " +
-                    "student_discount INT)");
+                    "student_discount DOUBLE PRECISION)");
+            s.execute("ALTER TABLE users ALTER COLUMN student_discount TYPE DOUBLE PRECISION");
             s.execute("CREATE TABLE IF NOT EXISTS restaurants(id INT PRIMARY KEY, name VARCHAR(255), address VARCHAR(255))");
             s.execute("CREATE TABLE IF NOT EXISTS drivers(" +
                     "id INT PRIMARY KEY, " +
@@ -32,8 +33,9 @@ public class DatabaseManager {
                     "available BOOLEAN, " +
                     "driver_type VARCHAR(50), " +
                     "vehicle_type VARCHAR(100), " +
-                    "speed_multiplier DOUBLE PRECISION)");
-            s.execute("CREATE TABLE IF NOT EXISTS orders(id INT PRIMARY KEY, user_id INT, restaurant_id INT, items VARCHAR(1024), driver_id INT, status VARCHAR(50))");
+                    "price_multiplier DOUBLE PRECISION)");
+            s.execute("CREATE TABLE IF NOT EXISTS orders(id INT PRIMARY KEY, user_id INT, restaurant_id INT, items VARCHAR(1024), delivery_fee DOUBLE PRECISION, driver_id INT, status VARCHAR(50))");
+            s.execute("ALTER TABLE orders ADD COLUMN IF NOT EXISTS delivery_fee DOUBLE PRECISION");
             s.execute("CREATE TABLE IF NOT EXISTS menus(id INT PRIMARY KEY, restaurant_id INT)");
             s.execute("CREATE TABLE IF NOT EXISTS menu_items(id INT PRIMARY KEY, menu_id INT, name VARCHAR(255), price DOUBLE PRECISION)");
             s.execute("CREATE TABLE IF NOT EXISTS reviews(id INT PRIMARY KEY, user_id INT, restaurant_id INT, rating INT, comment VARCHAR(1024))");

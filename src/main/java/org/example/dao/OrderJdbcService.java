@@ -24,14 +24,15 @@ public class OrderJdbcService {
     public static OrderJdbcService getInstance() { return INSTANCE; }
 
     public void create(Order o) {
-        String sql = "INSERT INTO orders(id,user_id,restaurant_id,items,driver_id,status) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO orders(id,user_id,restaurant_id,items,delivery_fee,driver_id,status) VALUES(?,?,?,?,?,?,?)";
         try (Connection c = DatabaseManager.getInstance().getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, o.getId());
             ps.setInt(2, o.getUser().getId());
             ps.setInt(3, o.getRestaurant().getId());
             ps.setString(4, o.getItems());
-            ps.setObject(5, o.getDriver()==null?null:o.getDriver().getId());
-            ps.setString(6, o.getStatus().name());
+            ps.setDouble(5, o.getDeliveryFee());
+            ps.setObject(6, o.getDriver()==null?null:o.getDriver().getId());
+            ps.setString(7, o.getStatus().name());
             ps.executeUpdate();
             AuditService.getInstance().record("create_order:" + o.getId());
         } catch (SQLException e) { throw new RuntimeException(e); }
@@ -42,7 +43,7 @@ public class OrderJdbcService {
     }
 
     public Order findById(int id, Collection<User> users, Collection<Restaurant> restaurants, Collection<Driver> drivers) {
-        String sql = "SELECT id,user_id,restaurant_id,items,driver_id,status FROM orders WHERE id=?";
+        String sql = "SELECT id,user_id,restaurant_id,items,delivery_fee,driver_id,status FROM orders WHERE id=?";
         try (Connection c = DatabaseManager.getInstance().getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -59,7 +60,7 @@ public class OrderJdbcService {
     }
 
     public List<Order> listAll(Collection<User> users, Collection<Restaurant> restaurants, Collection<Driver> drivers) {
-        String sql = "SELECT id,user_id,restaurant_id,items,driver_id,status FROM orders";
+        String sql = "SELECT id,user_id,restaurant_id,items,delivery_fee,driver_id,status FROM orders";
         List<Order> res = new ArrayList<>();
         try (Connection c = DatabaseManager.getInstance().getConnection(); Statement s = c.createStatement(); ResultSet rs = s.executeQuery(sql)) {
             while (rs.next()) {
@@ -83,7 +84,7 @@ public class OrderJdbcService {
             return null;
         }
 
-        Order order = new Order(rs.getInt("id"), user, restaurant, rs.getString("items"));
+        Order order = new Order(rs.getInt("id"), user, restaurant, rs.getString("items"), rs.getDouble("delivery_fee"));
         int driverId = rs.getInt("driver_id");
         if (!rs.wasNull()) {
             order.setDriver(driversById.get(driverId));
@@ -93,12 +94,13 @@ public class OrderJdbcService {
     }
 
     public void update(Order o) {
-        String sql = "UPDATE orders SET items=?,driver_id=?,status=? WHERE id=?";
+        String sql = "UPDATE orders SET items=?,delivery_fee=?,driver_id=?,status=? WHERE id=?";
         try (Connection c = DatabaseManager.getInstance().getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setString(1, o.getItems());
-            ps.setObject(2, o.getDriver()==null?null:o.getDriver().getId());
-            ps.setString(3, o.getStatus().name());
-            ps.setInt(4, o.getId());
+            ps.setDouble(2, o.getDeliveryFee());
+            ps.setObject(3, o.getDriver()==null?null:o.getDriver().getId());
+            ps.setString(4, o.getStatus().name());
+            ps.setInt(5, o.getId());
             ps.executeUpdate();
             AuditService.getInstance().record("update_order:" + o.getId());
         } catch (SQLException e) { throw new RuntimeException(e); }

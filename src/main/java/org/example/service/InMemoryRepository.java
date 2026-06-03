@@ -7,6 +7,8 @@ import org.example.dao.OrderJdbcService;
 import org.example.dao.UserJdbcService;
 import org.example.dao.RestaurantJdbcService;
 import org.example.dao.DriverJdbcService;
+import org.example.dao.MenuJdbcService;
+import org.example.dao.ReviewJdbcService;
 
 public class InMemoryRepository {
     private final Map<Integer, User> users = new HashMap<>();
@@ -48,9 +50,9 @@ public class InMemoryRepository {
         return d;
     }
 
-    public ExpressDriver addExpressDriver(String name, String vehicleType, double speedMultiplier) {
+    public ExpressDriver addExpressDriver(String name, String vehicleType, double priceMultiplier) {
         int id = driverIdSeq.getAndIncrement();
-        ExpressDriver d = new ExpressDriver(id, name, vehicleType, speedMultiplier);
+        ExpressDriver d = new ExpressDriver(id, name, vehicleType, priceMultiplier);
         drivers.put(id, d);
         return d;
     }
@@ -62,7 +64,7 @@ public class InMemoryRepository {
         return p;
     }
 
-    public StudentUser addStudentUser(String name, String address, String email, String phoneNumber, String university, int discountPercent) {
+    public StudentUser addStudentUser(String name, String address, String email, String phoneNumber, String university, double discountPercent) {
         int id = userIdSeq.getAndIncrement();
         StudentUser student = new StudentUser(id, name, address, email, phoneNumber, university, discountPercent);
         users.put(id, student);
@@ -92,9 +94,9 @@ public class InMemoryRepository {
         return r;
     }
 
-    public Order addOrder(User user, Restaurant restaurant, String items) {
+    public Order addOrder(User user, Restaurant restaurant, String items, double deliveryFee) {
         int id = orderIdSeq.getAndIncrement();
-        Order o = new Order(id, user, restaurant, items);
+        Order o = new Order(id, user, restaurant, items, deliveryFee);
         orders.put(id, o);
         return o;
     }
@@ -141,6 +143,29 @@ public class InMemoryRepository {
             if (d.getId() > maxDid) maxDid = d.getId();
         }
         driverIdSeq.set(Math.max(driverIdSeq.get(), maxDid + 1));
+
+        // menus + menu items
+        List<Menu> dbMenus = MenuJdbcService.getInstance().listAll();
+        int maxMid = 0;
+        int maxMenuItemId = 0;
+        for (Menu menu : dbMenus) {
+            menus.put(menu.getId(), menu);
+            if (menu.getId() > maxMid) maxMid = menu.getId();
+            for (MenuItem item : menu.getItems()) {
+                if (item.getId() > maxMenuItemId) maxMenuItemId = item.getId();
+            }
+        }
+        menuIdSeq.set(Math.max(menuIdSeq.get(), maxMid + 1));
+        menuItemIdSeq.set(Math.max(menuItemIdSeq.get(), maxMenuItemId + 1));
+
+        // reviews
+        List<Review> dbReviews = ReviewJdbcService.getInstance().listAll();
+        int maxReviewId = 0;
+        for (Review review : dbReviews) {
+            reviews.put(review.getId(), review);
+            if (review.getId() > maxReviewId) maxReviewId = review.getId();
+        }
+        reviewIdSeq.set(Math.max(reviewIdSeq.get(), maxReviewId + 1));
 
         // orders
         List<Order> dbOrders = OrderJdbcService.getInstance().listAll(users.values(), restaurants.values(), drivers.values());

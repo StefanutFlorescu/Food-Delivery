@@ -16,6 +16,12 @@ public class PremiumUser extends User {
     public void setLoyaltyPoints(int loyaltyPoints) { this.loyaltyPoints = loyaltyPoints; }
 
     @Override
+    public double getDiscountPercentOverall() {
+        double adjusted = discountPercent * loyaltyPoints / 10.0;
+        return Math.max(0.0, Math.min(100.0, adjusted));
+    }
+
+    @Override
     public String toString() {
         return "PremiumUser{" + describeCoreFields() + ", points=" + loyaltyPoints + '}';
     }

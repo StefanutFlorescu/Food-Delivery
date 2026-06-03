@@ -6,6 +6,7 @@ public class User {
     private String address;
     private String email;
     private String phoneNumber;
+    protected double discountPercent;
 
     public User(int id, String name, String address) {
         this(id, name, address, null, null);
@@ -28,10 +29,16 @@ public class User {
     public void setEmail(String email) { this.email = email; }
     public String getPhoneNumber() { return phoneNumber; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public double getDiscountPercent() { return discountPercent; }
+    public void setDiscountPercent(double discountPercent) { this.discountPercent = discountPercent; }
 
     protected String describeCoreFields() {
         return "id=" + id + ", name='" + name + '\'' + ", address='" + address + '\''
                 + ", email='" + email + '\'' + ", phoneNumber='" + phoneNumber + '\'';
+    }
+
+    public double getDiscountPercentOverall() {
+        return Math.max(0.0, Math.min(100.0, discountPercent));
     }
 
     @Override

@@ -35,10 +35,10 @@ public class UserJdbcService {
             if (isStudent) {
                 StudentUser studentUser = (StudentUser) u;
                 ps.setString(9, studentUser.getUniversity());
-                ps.setInt(10, studentUser.getDiscountPercent());
+                ps.setDouble(10, studentUser.getDiscountPercent());
             } else {
                 ps.setNull(9, Types.VARCHAR);
-                ps.setNull(10, Types.INTEGER);
+                ps.setNull(10, Types.DOUBLE);
             }
             ps.executeUpdate();
             AuditService.getInstance().record("create_user:" + u.getId());
@@ -55,7 +55,7 @@ public class UserJdbcService {
                 if (rs.next()) {
                     String userType = rs.getString(8);
                     if ("STUDENT".equals(userType)) {
-                        return new StudentUser(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(6), rs.getString(7), rs.getString(9), rs.getInt(10));
+                        return new StudentUser(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(6), rs.getString(7), rs.getString(9), rs.getDouble(10));
                     }
                     if (rs.getBoolean(4) || "PREMIUM".equals(userType)) {
                         return new PremiumUser(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(6), rs.getString(7), rs.getInt(5));
@@ -74,7 +74,7 @@ public class UserJdbcService {
             while (rs.next()) {
                 String userType = rs.getString(8);
                 if ("STUDENT".equals(userType)) {
-                    res.add(new StudentUser(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(6), rs.getString(7), rs.getString(9), rs.getInt(10)));
+                    res.add(new StudentUser(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(6), rs.getString(7), rs.getString(9), rs.getDouble(10)));
                 } else if (rs.getBoolean(4) || "PREMIUM".equals(userType)) {
                     res.add(new PremiumUser(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(6), rs.getString(7), rs.getInt(5)));
                 } else {
@@ -102,10 +102,10 @@ public class UserJdbcService {
             if (isStudent) {
                 StudentUser studentUser = (StudentUser) u;
                 ps.setString(8, studentUser.getUniversity());
-                ps.setInt(9, studentUser.getDiscountPercent());
+                ps.setDouble(9, studentUser.getDiscountPercent());
             } else {
                 ps.setNull(8, Types.VARCHAR);
-                ps.setNull(9, Types.INTEGER);
+                ps.setNull(9, Types.DOUBLE);
             }
             ps.setInt(10, u.getId());
             ps.executeUpdate();
