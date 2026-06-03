@@ -49,7 +49,6 @@ public class FoodDeliveryApp {
                         System.out.print("Telefon: ");
                         String phone = sc.nextLine();
                         User u = svc.createUser(n, a, e, phone);
-                        svc.persistUserToDb(u);
                         System.out.println("Creat: " + u);
                     }
                     case "2" -> {
@@ -64,7 +63,6 @@ public class FoodDeliveryApp {
                         System.out.print("Puncte loialitate: ");
                         int p = Integer.parseInt(sc.nextLine());
                         PremiumUser pu = svc.createPremiumUser(n, a, e, phone, p);
-                        svc.persistUserToDb(pu);
                         System.out.println("Creat: " + pu);
                     }
                     case "3" -> {
@@ -81,7 +79,6 @@ public class FoodDeliveryApp {
                         System.out.print("Reducere student (%): ");
                         int discount = Integer.parseInt(sc.nextLine());
                         StudentUser su = svc.createStudentUser(n, a, e, phone, university, discount);
-                        svc.persistUserToDb(su);
                         System.out.println("Creat: " + su);
                     }
                     case "4" -> {
@@ -90,14 +87,12 @@ public class FoodDeliveryApp {
                         System.out.print("Adresa: ");
                         String a = sc.nextLine();
                         Restaurant r = svc.createRestaurant(n, a);
-                        svc.persistRestaurantToDb(r);
                         System.out.println("Creat: " + r);
                     }
                     case "5" -> {
                         System.out.print("Nume sofer: ");
                         String n = sc.nextLine();
                         Driver d = svc.createDriver(n);
-                        svc.persistDriverToDb(d);
                         System.out.println("Creat: " + d);
                     }
                     case "6" -> {
@@ -108,7 +103,6 @@ public class FoodDeliveryApp {
                         System.out.print("Multiplicator viteza: ");
                         double speedMultiplier = Double.parseDouble(sc.nextLine());
                         ExpressDriver d = svc.createExpressDriver(n, vehicleType, speedMultiplier);
-                        svc.persistDriverToDb(d);
                         System.out.println("Creat: " + d);
                     }
                     case "7" -> svc.listUsers().forEach(System.out::println);
@@ -152,7 +146,6 @@ public class FoodDeliveryApp {
                         System.out.print("Item(s) descriere: ");
                         String it = sc.nextLine();
                         Order o = svc.placeOrder(uid, rid, it);
-                        svc.persistOrderToDb(o);
                         System.out.println("Comanda plasata: " + o);
                     }
                     case "16" -> {

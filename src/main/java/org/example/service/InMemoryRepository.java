@@ -26,10 +26,6 @@ public class InMemoryRepository {
     private final AtomicInteger driverIdSeq = new AtomicInteger(1);
     private final AtomicInteger orderIdSeq = new AtomicInteger(1);
 
-    public User addUser(String name, String address) {
-        return addUser(name, address, null, null);
-    }
-
     public User addUser(String name, String address, String email, String phoneNumber) {
         int id = userIdSeq.getAndIncrement();
         User u = new User(id, name, address, email, phoneNumber);
@@ -57,10 +53,6 @@ public class InMemoryRepository {
         ExpressDriver d = new ExpressDriver(id, name, vehicleType, speedMultiplier);
         drivers.put(id, d);
         return d;
-    }
-
-    public PremiumUser addPremiumUser(String name, String address, int points) {
-        return addPremiumUser(name, address, null, null, points);
     }
 
     public PremiumUser addPremiumUser(String name, String address, String email, String phoneNumber, int points) {

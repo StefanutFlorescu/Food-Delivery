@@ -12,7 +12,7 @@ public class AuditService {
 
     public static AuditService getInstance() { return INSTANCE; }
 
-    public synchronized void record(String action) {
+    public void record(String action) {
         try (FileWriter fw = new FileWriter(file, true)) {
             fw.append(action).append(",").append(Instant.now().toString()).append("\n");
         } catch (IOException e) {

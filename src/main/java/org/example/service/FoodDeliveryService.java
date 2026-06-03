@@ -1,7 +1,11 @@
 package org.example.service;
 
+
 import org.example.dao.DriverJdbcService;
 import org.example.dao.OrderJdbcService;
+import org.example.dao.RestaurantJdbcService;
+import org.example.dao.OrderJdbcService;
+import org.example.dao.UserJdbcService;
 import org.example.model.*;
 import java.util.*;
 
@@ -12,17 +16,36 @@ public class FoodDeliveryService {
         this.repo = repo;
     }
 
-    public User createUser(String name, String address) { return repo.addUser(name, address); }
-    public User createUser(String name, String address, String email, String phoneNumber) { return repo.addUser(name, address, email, phoneNumber); }
-    public Restaurant createRestaurant(String name, String address) { return repo.addRestaurant(name, address); }
-    public Driver createDriver(String name) { return repo.addDriver(name); }
-    public ExpressDriver createExpressDriver(String name, String vehicleType, double speedMultiplier) { return repo.addExpressDriver(name, vehicleType, speedMultiplier); }
-    public PremiumUser createPremiumUser(String name, String address, int points) { return repo.addPremiumUser(name, address, points); }
+    public User createUser(String name, String address, String email, String phoneNumber) {
+        User aux = repo.addUser(name, address, email, phoneNumber);
+        persistUserToDb(aux);
+        return aux;
+    }
+    public Restaurant createRestaurant(String name, String address) {
+        Restaurant aux = repo.addRestaurant(name, address);
+        persistRestaurantToDb(aux);
+        return aux;
+    }
+    public Driver createDriver(String name) {
+        Driver aux = repo.addDriver(name);
+        persistDriverToDb(aux);
+        return aux;
+    }
+    public ExpressDriver createExpressDriver(String name, String vehicleType, double speedMultiplier) {
+        ExpressDriver aux = repo.addExpressDriver(name, vehicleType, speedMultiplier);
+        persistDriverToDb(aux);
+        return aux;
+    }
+
     public PremiumUser createPremiumUser(String name, String address, String email, String phoneNumber, int points) {
-        return repo.addPremiumUser(name, address, email, phoneNumber, points);
+        PremiumUser aux = repo.addPremiumUser(name, address, email, phoneNumber, points);
+        persistUserToDb(aux);
+        return aux;
     }
     public StudentUser createStudentUser(String name, String address, String email, String phoneNumber, String university, int discountPercent) {
-        return repo.addStudentUser(name, address, email, phoneNumber, university, discountPercent);
+        StudentUser aux = repo.addStudentUser(name, address, email, phoneNumber, university, discountPercent);
+        persistUserToDb(aux);
+        return aux;
     }
 
     public Menu createMenuForRestaurant(int restaurantId) { return repo.createMenuForRestaurant(restaurantId); }
@@ -37,7 +60,9 @@ public class FoodDeliveryService {
     public Order placeOrder(int userId, int restaurantId, String items) {
         User u = repo.findUser(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Restaurant r = repo.findRestaurant(restaurantId).orElseThrow(() -> new IllegalArgumentException("Restaurant not found"));
-        return repo.addOrder(u, r, items);
+        Order o = repo.addOrder(u, r, items);
+        persistOrderToDb(o);
+        return o;
     }
 
     public boolean assignDriver(int orderId, int driverId) {
@@ -74,8 +99,8 @@ public class FoodDeliveryService {
     public Collection<Order> listOrders() { return repo.getAllOrders(); }
 
     // JDBC-backed CRUD helpers
-    public void persistUserToDb(User u) { org.example.dao.UserJdbcService.getInstance().create(u); }
-    public void persistRestaurantToDb(Restaurant r) { org.example.dao.RestaurantJdbcService.getInstance().create(r); }
-    public void persistDriverToDb(Driver d) { org.example.dao.DriverJdbcService.getInstance().create(d); }
-    public void persistOrderToDb(Order o) { org.example.dao.OrderJdbcService.getInstance().create(o); }
+    public void persistUserToDb(User u) { UserJdbcService.getInstance().create(u); }
+    public void persistRestaurantToDb(Restaurant r) { RestaurantJdbcService.getInstance().create(r); }
+    public void persistDriverToDb(Driver d) { DriverJdbcService.getInstance().create(d); }
+    public void persistOrderToDb(Order o) { OrderJdbcService.getInstance().create(o); }
 }
